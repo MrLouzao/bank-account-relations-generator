@@ -16,7 +16,7 @@ console.log(`Generating ${numberOfLevelsToGenerate} levels with ${numberOfAccoun
 
 const createAccount = (level, parent) => {
     counter++;
-    const account = { acc: `LEVEL${level}-ES00000${counter}`, parent: parent};
+    const account = { acc: `ES${level}0000${counter}`, parent: parent};
     generatedAccounts.push(account);
     return account;
 }
@@ -25,10 +25,7 @@ const createAccount = (level, parent) => {
 // Recursive generation of accounts
 const generateLevel = (numberOfLevel, maxLevel, accountToGenerateInLevel, parentAccount, accumulator) => {
     for(let i=0; i<accountToGenerateInLevel; i++){
-        counter++;
-        const newAccount = "LEVEL" + (numberOfLevel) + "-ES00000" + counter;
-        accumulator.push({acc: newAccount, parent: parentAccount});
-
+        const newAccount =  createAccount(numberOfLevel, parentAccount.acc);
         if(numberOfLevel+1<maxLevel){
             generateLevel(numberOfLevel+1, maxLevel, accountToGenerateInLevel, newAccount, accumulator);
         }
@@ -36,11 +33,9 @@ const generateLevel = (numberOfLevel, maxLevel, accountToGenerateInLevel, parent
 }
 
 
-
-
 // Start to generate accouns recursively from root
 const rootAccount = createAccount(0);
-generateLevel(1, numberOfLevelsToGenerate, numberOfAccountsPerLevel, rootAccount.acc, generatedAccounts);
+generateLevel(1, numberOfLevelsToGenerate, numberOfAccountsPerLevel, rootAccount, generatedAccounts);
 
 
 // Put results on file
@@ -65,7 +60,7 @@ fs.mkdir(`${__dirname }/out`, {recursive: true}, err => {
 console.log(`Total accounts generated: ${generatedAccounts.length}`);
 getAccountInLevel = (level) =>{
     return generatedAccounts
-    .filter(acc => acc.acc.includes(`LEVEL${level}`))
+    .filter(acc => acc.acc.includes(`ES${level}`))
     .length;
 }
 for(var i=0; i<numberOfLevelsToGenerate; i++){
